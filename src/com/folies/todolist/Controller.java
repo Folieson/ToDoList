@@ -1,6 +1,8 @@
 package com.folies.todolist;
 
 import com.folies.todolist.datamodel.ToDoItem;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -28,7 +30,7 @@ public class Controller {
     @FXML
     public void initialize() {
         ToDoItem item1 = new ToDoItem("Mail birthday card", "Buy a 30th birthday card for Mary",
-                LocalDate.of(2021, Month.JANUARY, 1));
+                LocalDate.of(2021, Month.JANUARY, 3));
         ToDoItem item2 = new ToDoItem("Doctor's Appointment", "See Dr. Smith at 123 Main Street. Bring Paperwork",
                 LocalDate.of(2020, Month.MARCH, 25));
         ToDoItem item3 = new ToDoItem("Finish design proposal dor client", "I promised Mark I'd email website mockups by Friday 22nd April",
@@ -40,14 +42,18 @@ public class Controller {
 
         toDoItems = new ArrayList<ToDoItem>(List.of(item1,item2,item3,item4,item5));
 
+        toDoListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<ToDoItem>() {
+            @Override
+            public void changed(ObservableValue<? extends ToDoItem> observableValue, ToDoItem toDoItem, ToDoItem newValue) {
+                if(newValue != null) {
+                    itemDetailsTextArea.setText(newValue.getDetails());
+                    deadlineLabel.setText(newValue.getDeadline().toString());
+                }
+            }
+        });
+
         toDoListView.getItems().setAll(toDoItems);
         toDoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    }
-
-    @FXML
-    private void handleClickListView() {
-        ToDoItem selectedItem = toDoListView.getSelectionModel().getSelectedItem();
-        itemDetailsTextArea.setText(selectedItem.getDetails());
-        deadlineLabel.setText(selectedItem.getDeadline().toString());
+        toDoListView.getSelectionModel().selectFirst();
     }
 }
