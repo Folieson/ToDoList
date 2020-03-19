@@ -31,6 +31,10 @@ public class ToDoData {
         return toDoItems;
     }
 
+    public void addToDoItem(ToDoItem toDoItem) {
+        toDoItems.add(toDoItem);
+    }
+
     public void loadToDoItems() throws IOException {
         toDoItems = FXCollections.observableArrayList();
         Path path = Paths.get(fileName);

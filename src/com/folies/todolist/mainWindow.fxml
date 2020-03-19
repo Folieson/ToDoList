@@ -8,7 +8,7 @@
     <top>
         <MenuBar>
             <Menu text="File">
-                <MenuItem text="New..."/>
+                <MenuItem text="New..." onAction="#showNewItemDialog"/>
                 <SeparatorMenuItem/>
                 <MenuItem text="Exit"/>
             </Menu>
