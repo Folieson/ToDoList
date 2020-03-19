@@ -1,8 +1,6 @@
 package com.folies.todolist;
 
 import com.folies.todolist.datamodel.ToDoItem;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -11,6 +9,7 @@ import javafx.scene.control.TextArea;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,15 +39,13 @@ public class Controller {
         ToDoItem item5 = new ToDoItem("Pick up dry cleaning", "The clothes should be ready by Wednesday",
                 LocalDate.of(2020, Month.FEBRUARY, 20));
 
-        toDoItems = new ArrayList<ToDoItem>(List.of(item1,item2,item3,item4,item5));
+        toDoItems = new ArrayList<>(List.of(item1, item2, item3, item4, item5));
 
-        toDoListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<ToDoItem>() {
-            @Override
-            public void changed(ObservableValue<? extends ToDoItem> observableValue, ToDoItem toDoItem, ToDoItem newValue) {
-                if(newValue != null) {
-                    itemDetailsTextArea.setText(newValue.getDetails());
-                    deadlineLabel.setText(newValue.getDeadline().toString());
-                }
+        toDoListView.getSelectionModel().selectedItemProperty().addListener((observableValue, toDoItem, newValue) -> {
+            if (newValue != null) {
+                itemDetailsTextArea.setText(newValue.getDetails());
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("d MMMM yyyy");
+                deadlineLabel.setText(df.format(newValue.getDeadline()));
             }
         });
 
