@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<BorderPane fx:controller="com.folies.todolist.Controller"
+<BorderPane fx:id="mainBorderPain" fx:controller="com.folies.todolist.Controller"
             xmlns:fx="http://javafx.com/fxml">
     <top>
         <MenuBar>
