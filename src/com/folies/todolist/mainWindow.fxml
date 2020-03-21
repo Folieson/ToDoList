@@ -20,7 +20,7 @@
     </left>
     <center>
         <VBox style="-fx-background-color: white">
-            <TextArea fx:id="itemDetailsTextArea" VBox.vgrow="ALWAYS"/>
+            <TextArea fx:id="itemDetailsTextArea" wrapText="true" VBox.vgrow="ALWAYS"/>
             <HBox>
                 <Label text="Due: " style="-fx-background-color: white">
                     <font>
