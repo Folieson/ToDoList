@@ -3,6 +3,7 @@ package com.folies.todolist;
 import com.folies.todolist.datamodel.ToDoData;
 import com.folies.todolist.datamodel.ToDoItem;
 import javafx.application.Platform;
+import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class Controller {
 
@@ -38,6 +40,11 @@ public class Controller {
 
     @FXML
     private ToggleButton filterToggleButton;
+
+    private FilteredList<ToDoItem> filteredList;
+
+    private Predicate<ToDoItem> wantAllItems;
+    private Predicate<ToDoItem> wantTodayItems;
 
     @FXML
     public void initialize() {
@@ -61,10 +68,14 @@ public class Controller {
             }
         });
 
-        SortedList<ToDoItem> sortedList = new SortedList<>(ToDoData.getInstance().getToDoItems(),
+        wantAllItems = toDoItem -> true;
+        wantTodayItems = toDoItem -> toDoItem.getDeadline().isEqual(LocalDate.now());
+
+        filteredList = new FilteredList<>(ToDoData.getInstance().getToDoItems(), wantAllItems);
+
+        SortedList<ToDoItem> sortedList = new SortedList<>(filteredList,
                 Comparator.comparing(ToDoItem::getDeadline));
 
-//        toDoListView.setItems(ToDoData.getInstance().getToDoItems());
         toDoListView.setItems(sortedList);
         toDoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         toDoListView.getSelectionModel().selectFirst();
@@ -166,7 +177,7 @@ public class Controller {
     }
 
     @FXML
-    private void exit() {
+    private void handleExitPressed() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Exit");
         alert.setHeaderText("Exit from ToDoList");
@@ -190,10 +201,20 @@ public class Controller {
 
     @FXML
     private void handleFilterButtonPressed() {
+        ToDoItem selectedItem = toDoListView.getSelectionModel().getSelectedItem();
         if (filterToggleButton.isSelected()) {
-
+            filteredList.setPredicate(wantTodayItems);
+            if (filteredList.isEmpty()) {
+                itemDetailsTextArea.clear();
+                deadlineLabel.setText("");
+            } else if (filteredList.contains(selectedItem)) {
+                toDoListView.getSelectionModel().select(selectedItem);
+            } else {
+                toDoListView.getSelectionModel().selectFirst();
+            }
         } else {
-
+            filteredList.setPredicate(wantAllItems);
+            toDoListView.getSelectionModel().select(selectedItem);
         }
     }
 }
