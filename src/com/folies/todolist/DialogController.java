@@ -11,6 +11,8 @@ import java.time.LocalDate;
 
 public class DialogController {
 
+    private ToDoItem itemToEdit = null;
+
     @FXML
     private TextField shortDescriptionTextField;
 
@@ -25,7 +27,18 @@ public class DialogController {
         String details = detailsTextArea.getText().trim();
         LocalDate deadline = deadlineDatePicker.getValue();
         ToDoItem newItem = new ToDoItem(shortDescription, details, deadline);
-        ToDoData.getInstance().addToDoItem(newItem);
+        if (itemToEdit != null) {
+            ToDoData.getInstance().replaceToDoItem(itemToEdit, newItem);
+        } else {
+            ToDoData.getInstance().addToDoItem(newItem);
+        }
         return newItem;
+    }
+
+    public void initWith(ToDoItem item) {
+        itemToEdit = item;
+        shortDescriptionTextField.setText(item.getShortDescription());
+        detailsTextArea.setText(item.getDetails());
+        deadlineDatePicker.setValue(item.getDeadline());
     }
 }

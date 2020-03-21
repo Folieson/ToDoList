@@ -69,6 +69,11 @@ public class ToDoData {
         }
     }
 
+    public void replaceToDoItem(ToDoItem oldItem, ToDoItem newItem) {
+        int indexOfOldItem = toDoItems.indexOf(oldItem);
+        toDoItems.set(indexOfOldItem, newItem);
+    }
+
     public void deleteToDoItem(ToDoItem item) {
         toDoItems.remove(item);
     }

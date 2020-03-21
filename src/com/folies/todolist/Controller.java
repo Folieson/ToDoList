@@ -2,6 +2,7 @@ package com.folies.todolist;
 
 import com.folies.todolist.datamodel.ToDoData;
 import com.folies.todolist.datamodel.ToDoItem;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -35,11 +36,16 @@ public class Controller {
     public void initialize() {
         contextMenu = new ContextMenu();
         MenuItem deleteMenuItem = new MenuItem("Delete");
+        MenuItem editMenuItem = new MenuItem("Edit");
         deleteMenuItem.setOnAction(event -> {
             ToDoItem selectedItem = toDoListView.getSelectionModel().getSelectedItem();
             deleteItem(selectedItem);
         });
-        contextMenu.getItems().addAll(deleteMenuItem);
+        editMenuItem.setOnAction(event -> {
+            ToDoItem selectedItem = toDoListView.getSelectionModel().getSelectedItem();
+            showEditItemDialog(selectedItem);
+        });
+        contextMenu.getItems().addAll(deleteMenuItem, editMenuItem);
         toDoListView.getSelectionModel().selectedItemProperty().addListener((observableValue, toDoItem, newValue) -> {
             if (newValue != null) {
                 itemDetailsTextArea.setText(newValue.getDetails());
@@ -109,6 +115,33 @@ public class Controller {
         }
     }
 
+    private void showEditItemDialog(ToDoItem item) {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(mainBorderPain.getScene().getWindow());
+        dialog.setTitle("Edit ToDo Item");
+        dialog.setHeaderText("Use this dialog to edit selected toDo item");
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("toDoItemDialog.fxml"));
+        try {
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+        } catch (IOException e) {
+            System.err.println("Couldn't load the dialog");
+            e.printStackTrace();
+        }
+
+        DialogController dialogController = fxmlLoader.getController();
+        dialogController.initWith(item);
+
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            ToDoItem newItem = dialogController.processResults();
+            toDoListView.getSelectionModel().select(newItem);
+        }
+    }
+
     private void deleteItem(ToDoItem item) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Delete ToDo Item");
@@ -118,6 +151,19 @@ public class Controller {
 
         if (result.isPresent() && (result.get() == ButtonType.OK)) {
             ToDoData.getInstance().deleteToDoItem(item);
+        }
+    }
+
+    @FXML
+    private void exit() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit");
+        alert.setHeaderText("Exit from ToDoList");
+        alert.setContentText("Are you sure?  Press OK to confirm, or cancel to back out.");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && (result.get() == ButtonType.OK)) {
+            Platform.exit();
         }
     }
 }
