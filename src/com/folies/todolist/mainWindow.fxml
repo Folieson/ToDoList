@@ -1,18 +1,34 @@
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <BorderPane fx:id="mainBorderPain" fx:controller="com.folies.todolist.Controller"
             xmlns:fx="http://javafx.com/fxml">
     <top>
-        <MenuBar>
-            <Menu text="File">
-                <MenuItem text="New..." onAction="#showNewItemDialog"/>
-                <SeparatorMenuItem/>
-                <MenuItem text="Exit" onAction="#exit"/>
-            </Menu>
-        </MenuBar>
+        <VBox>
+            <MenuBar>
+                <Menu text="File">
+                    <MenuItem text="New..." onAction="#showNewItemDialog"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Exit" onAction="#exit"/>
+                </Menu>
+            </MenuBar>
+            <ToolBar>
+                <HBox>
+                    <Button onAction="#showNewItemDialog">
+                        <tooltip>
+                            <Tooltip text="Add a New ToDo Item"/>
+                        </tooltip>
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/toolbarButtonGraphics/general/New24.gif"/>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+            </ToolBar>
+        </VBox>
     </top>
     <left>
         <ListView fx:id="toDoListView" onKeyPressed="#handleKeyPressed">
