@@ -3,6 +3,7 @@ package com.folies.todolist;
 import com.folies.todolist.datamodel.ToDoData;
 import com.folies.todolist.datamodel.ToDoItem;
 import javafx.application.Platform;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -15,6 +16,7 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.Optional;
 
 public class Controller {
@@ -33,6 +35,9 @@ public class Controller {
 
     @FXML
     private ContextMenu contextMenu;
+
+    @FXML
+    private ToggleButton filterToggleButton;
 
     @FXML
     public void initialize() {
@@ -56,7 +61,11 @@ public class Controller {
             }
         });
 
-        toDoListView.setItems(ToDoData.getInstance().getToDoItems());
+        SortedList<ToDoItem> sortedList = new SortedList<>(ToDoData.getInstance().getToDoItems(),
+                Comparator.comparing(ToDoItem::getDeadline));
+
+//        toDoListView.setItems(ToDoData.getInstance().getToDoItems());
+        toDoListView.setItems(sortedList);
         toDoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         toDoListView.getSelectionModel().selectFirst();
         toDoListView.setCellFactory(new Callback<>() {
@@ -176,6 +185,15 @@ public class Controller {
             if (keyEvent.getCode().equals(KeyCode.DELETE)) {
                 deleteItem(selectedItem);
             }
+        }
+    }
+
+    @FXML
+    private void handleFilterButtonPressed() {
+        if (filterToggleButton.isSelected()) {
+
+        } else {
+
         }
     }
 }
