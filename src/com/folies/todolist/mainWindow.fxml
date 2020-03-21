@@ -15,7 +15,7 @@
         </MenuBar>
     </top>
     <left>
-        <ListView fx:id="toDoListView">
+        <ListView fx:id="toDoListView" onKeyPressed="#handleKeyPressed">
         </ListView>
     </left>
     <center>
